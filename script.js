@@ -1,20 +1,34 @@
-const alreadyUsed=[]; // tableau vide
-
-// ENTRE LE MOT A TROUVER
+// ENTRE LE MOT A TROUVER----------------------------------------------------------------------------------------------------------------------
 function giveWord (){
-    let wordToFind=prompt("entre un mot");
+    let wordToFind=prompt("Entre le mot a deviner");
+    if(notaNumberAndNotASpecial(wordToFind)==true){
+        while(notaNumberAndNotASpecial(wordToFind)==true){
+            wordToFind=prompt("Les chiffres et les caractéres spéciaux ne sont pas autorisé !");
+        }
+    }
     wordToFind=upperCase(wordToFind);
-    const wordToFindIntoArray=wordToFind.split("");
+    const wordToFindIntoArray=wordToFind.split(""); // transforme le mot en tableau ou chaque lettre est separée
     return wordToFindIntoArray;
 }
 
-// CREE UN TABLEAU VIDE DU MOT A TROUVER
+// CREE UN TABLEAU VIDE DU MOT A TROUVER------------------------------------------------------------------------------------------------------
 function createEmptyWord (lengthToCopy){
     const emptyArray=[];
-    lengthToCopy.forEach((item,index)=>{
+    lengthToCopy.forEach((item,index)=>{  // remplit un tableau vide de la même taille que le mot à trouver
         emptyArray[index]="_";
     });
-    return emptyArray;
+    return emptyArray; // renvoi le tableau vide
+}
+
+// VERIFIE QUE L UTILISATEUR N'ENTRE PAS DE CHIFFRES NI D'ESPACE NI DE CARACTERE SPECIAUX---------------------------------------------------------------------
+function notaNumberAndNotASpecial(theBannedWord){
+
+    for(let i=0;i<theBannedWord.length;i++){
+        if(!/[a-z]+/i.test(theBannedWord[i])){ // renvoie true si un caractére du tableau n'est pas une lette
+            return true;
+        }
+    }
+    return false;
 }
 
 // VERIFIE QUE L UTILISATEUR ENTRE UNE SEULE LETTRE ET PAS DE CHIFFRE---------------------------------------------------------------------
@@ -27,14 +41,13 @@ function notaNumberandOnlyOneLetter(theLetter){
         if(theLetter==numbers[i] || theLetter.length>1){
             return true;
         }
-
     }
     return false;
 }
 
 // DEMANDE UNE LETTRE ---------------------------------------------------------------------------------------------
 function askLetter(){
-    let aLetter=prompt("entre une lettre");
+    let aLetter=prompt("Entre une lettre");
     if(notaNumberandOnlyOneLetter(aLetter)==true){
         while(notaNumberandOnlyOneLetter(aLetter)==true){
             aLetter=prompt("les chiffres ne sont pas autorisé et il ne peut y avoir qu'une seule lettre");
@@ -42,7 +55,6 @@ function askLetter(){
     }
     aLetter=upperCase(aLetter);
     return aLetter
-
 }
 
 // CONVERTIT UN TABLEAU EN STRING --------------------------------------------------------------------------------
@@ -51,7 +63,7 @@ function stringify(array){
     return array;
 }
 
-// TRANSFORME L INPUT EN MAJUSCULE--------------------------------------------------------------------------------
+// TRANSFORME L'INPUT EN MAJUSCULE--------------------------------------------------------------------------------
 function upperCase(theLetter){
     theLetter=theLetter.toUpperCase();
     return theLetter;
@@ -59,8 +71,8 @@ function upperCase(theLetter){
 
 // COMPARE LES LETTRES ENTREE AVEC LE TABLEAU EXISTANT ----------------------------------------------------------------
 
-function guessLetter(theWord,theEmptyWord, beenUsed){
-
+function guessLetter(theWord,theEmptyWord){
+        const alreadyUsed=[]; // tableau vide
         let realWord=stringify(theWord);
         let findWord=stringify(theEmptyWord);
         let gameisFinished=false;
@@ -72,15 +84,14 @@ function guessLetter(theWord,theEmptyWord, beenUsed){
             let used=false;
             letter=askLetter();
 
-            if(beenUsed.includes(letter)==true){
-                alert("vous avez deja utiliser cette lettre");
+            if(alreadyUsed.includes(letter)==true){
+                alert("Vous avez déjà utiliser cette lettre");
                 used=true;
             }
 
-
             if(theWord.includes(letter)==false){
-                alert("cette lettre n'est pas dans le mot");
-                beenUsed.push(letter);
+                alert("Cette lettre n'est pas dans le mot");
+                alreadyUsed.push(letter);
                 thereisLetter=false;
             }
 
@@ -91,7 +102,7 @@ function guessLetter(theWord,theEmptyWord, beenUsed){
                             theEmptyWord[index]=item;
                             alert("vous avez trouver la lettre "+letter);
                             findWord=stringify(theEmptyWord);
-                            beenUsed.push(letter);
+                            alreadyUsed.push(letter);
                             document.getElementById("target").innerHTML=findWord;
                             console.log(findWord);
                         }
@@ -102,18 +113,14 @@ function guessLetter(theWord,theEmptyWord, beenUsed){
             if(realWord==findWord){
                 gameisFinished=true;
             }
-
-
-
         }
-
-        alert("bravo vous avez trouver le mot "+findWord);
-
+        alert("Bravo vous avez trouver le mot "+findWord);
 }
+// LANCE LE JEU-----------------------------------------------------------------------------------
 
 const word=giveWord();
 const emptyWord=createEmptyWord(word);
 document.getElementById("target").innerHTML=stringify(emptyWord);
 document.getElementById("play").addEventListener("click", ()=>{
-    guessLetter(word,emptyWord, alreadyUsed);
+    guessLetter(word,emptyWord);
 });
