@@ -1,6 +1,34 @@
 const word=["B","O","N","J","O","U","R"];
-const emptyWord=["","","","","","",""];
-let letter="";
+const emptyWord=["_","_","_","_","_","_","_"];
+const alreadyUsed=[];
+
+// VERIFIE QUE L UTILISATEUR ENTRE UNE SEULE LETTRE ET PAS DE CHIFFRE---------------------------------------------------------------------
+function notaNumberandOnlyOneLetter(theLetter){
+
+    const numbers=["0","1","2","3","4","5","6","7","8","9"];
+
+    for(let i=0;i<numbers.length;i++){
+
+        if(theLetter==numbers[i] || theLetter.length>1){
+            return true;
+        }
+
+    }
+    return false;
+}
+
+// DEMANDE UNE LETTRE ---------------------------------------------------------------------------------------------
+function askLetter(){
+    let aLetter=prompt("entre une lettre");
+    if(notaNumberandOnlyOneLetter(aLetter)==true){
+        while(notaNumberandOnlyOneLetter(aLetter)==true){
+            aLetter=prompt("les chiffres ne sont pas autorisé et il ne peut y avoir qu'une seule lettre");
+        }
+    }
+    aLetter=upperCase(aLetter);
+    return aLetter
+
+}
 
 // CONVERTIT UN TABLEAU EN STRING --------------------------------------------------------------------------------
 function stringify(array){
@@ -14,46 +42,54 @@ function upperCase(theLetter){
     return theLetter;
 }
 
-// VERIFIE QUE L UTILISATEUR ENTRE UNE LETTRE ---------------------------------------------------------------------
-function notaNumber(theLetter){
-
-    const numbers=["0","1","2","3","4","5","6","7","8","9"];
-
-    for(let i=0;i<numbers.length;i++){
-
-        if(theLetter==numbers[i]){
-            return true;
-        }
-
-    }
-    return false;
-}
-
-
 // COMPARE LES LETTRES ENTREE AVEC LE TABLEAU EXISTANT ----------------------------------------------------------------
-function guessLetter(theWord, theLetter, theEmptyWord){
+
+function guessLetter(theWord,theEmptyWord, used){
 
         let realWord=stringify(theWord);
-        let findWord=stringify(theEmptyWord);;
+        let findWord=stringify(theEmptyWord);
+        let gameisFinished=false;
+        letter="";
 
-        while(realWord!=findWord){
+        while(gameisFinished==false){
 
-            for(let i=0; i<theWord.length;i++){
+            let thereisLetter=true;
+            let used=false;
+            letter=askLetter();
 
-                    if(theLetter==theWord[i]){
-                        theEmptyWord[i]=theLetter;
-                        console.log(stringify(theEmptyWord));
-                        findWord=stringify(theEmptyWord);
-                    }
-
+            if(alreadyUsed.includes(letter)==true){
+                alert("vous avez deja utiliser cette lettre");
+                used=true;
             }
-            theLetter=prompt("entre une autre lettre");
-            if(notaNumber(theLetter)==true){
-                while(notaNumber(theLetter)==true){
-                    theLetter=prompt("les chiffres ne sont pas autorisé");
-                }
+
+
+            if(theWord.includes(letter)==false){
+                alert("cette lettre n'est pas dans le mot");
+                alreadyUsed.push(letter);
+                thereisLetter=false;
             }
-            theLetter=upperCase(theLetter);
+
+            if(thereisLetter==true && used==false ){
+                theWord.forEach(function(item, index){
+
+                        if(letter==item){
+                            theEmptyWord[index]=item;
+                            alert("vous avez trouver la lettre "+letter);
+                            findWord=stringify(theEmptyWord);
+                            alreadyUsed.push(letter);
+                            document.getElementById("target").innerHTML=findWord;
+                            console.log(findWord);
+                        }
+
+                    });
+            }
+
+            if(realWord==findWord){
+                gameisFinished=true;
+            }
+
+
+
         }
 
         alert("bravo vous avez trouver le mot "+findWord);
@@ -61,11 +97,7 @@ function guessLetter(theWord, theLetter, theEmptyWord){
 }
 
 
-letter=prompt("entre une lettre");
-if(notaNumber(letter)==true){
-    while(notaNumber(letter)==true){
-        letter=prompt("les chiffres ne sont pas autorisé");
-    }
-}
-letter=upperCase(letter);
-guessLetter(word, letter, emptyWord);
+document.getElementById("target").innerHTML=stringify(emptyWord);
+document.getElementById("play").addEventListener("click", ()=>{
+    guessLetter(word,emptyWord, alreadyUsed);
+});
