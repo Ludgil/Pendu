@@ -1,6 +1,21 @@
-const word=["B","O","N","J","O","U","R"];
-const emptyWord=["_","_","_","_","_","_","_"];
-const alreadyUsed=[];
+const alreadyUsed=[]; // tableau vide
+
+// ENTRE LE MOT A TROUVER
+function giveWord (){
+    let wordToFind=prompt("entre un mot");
+    wordToFind=upperCase(wordToFind);
+    const wordToFindIntoArray=wordToFind.split("");
+    return wordToFindIntoArray;
+}
+
+// CREE UN TABLEAU VIDE DU MOT A TROUVER
+function createEmptyWord (lengthToCopy){
+    const emptyArray=[];
+    lengthToCopy.forEach((item,index)=>{
+        emptyArray[index]="_";
+    });
+    return emptyArray;
+}
 
 // VERIFIE QUE L UTILISATEUR ENTRE UNE SEULE LETTRE ET PAS DE CHIFFRE---------------------------------------------------------------------
 function notaNumberandOnlyOneLetter(theLetter){
@@ -44,7 +59,7 @@ function upperCase(theLetter){
 
 // COMPARE LES LETTRES ENTREE AVEC LE TABLEAU EXISTANT ----------------------------------------------------------------
 
-function guessLetter(theWord,theEmptyWord, used){
+function guessLetter(theWord,theEmptyWord, beenUsed){
 
         let realWord=stringify(theWord);
         let findWord=stringify(theEmptyWord);
@@ -57,7 +72,7 @@ function guessLetter(theWord,theEmptyWord, used){
             let used=false;
             letter=askLetter();
 
-            if(alreadyUsed.includes(letter)==true){
+            if(beenUsed.includes(letter)==true){
                 alert("vous avez deja utiliser cette lettre");
                 used=true;
             }
@@ -65,7 +80,7 @@ function guessLetter(theWord,theEmptyWord, used){
 
             if(theWord.includes(letter)==false){
                 alert("cette lettre n'est pas dans le mot");
-                alreadyUsed.push(letter);
+                beenUsed.push(letter);
                 thereisLetter=false;
             }
 
@@ -76,7 +91,7 @@ function guessLetter(theWord,theEmptyWord, used){
                             theEmptyWord[index]=item;
                             alert("vous avez trouver la lettre "+letter);
                             findWord=stringify(theEmptyWord);
-                            alreadyUsed.push(letter);
+                            beenUsed.push(letter);
                             document.getElementById("target").innerHTML=findWord;
                             console.log(findWord);
                         }
@@ -96,7 +111,8 @@ function guessLetter(theWord,theEmptyWord, used){
 
 }
 
-
+const word=giveWord();
+const emptyWord=createEmptyWord(word);
 document.getElementById("target").innerHTML=stringify(emptyWord);
 document.getElementById("play").addEventListener("click", ()=>{
     guessLetter(word,emptyWord, alreadyUsed);
