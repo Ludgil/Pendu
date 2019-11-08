@@ -72,6 +72,7 @@ function upperCase(theLetter){
 // COMPARE LES LETTRES ENTREE AVEC LE TABLEAU EXISTANT ----------------------------------------------------------------
 
 function guessLetter(theWord,theEmptyWord){
+        let fail=0;
         const alreadyUsed=[]; // tableau vide
         let realWord=stringify(theWord);
         let findWord=stringify(theEmptyWord);
@@ -93,6 +94,7 @@ function guessLetter(theWord,theEmptyWord){
                 alert("Cette lettre n'est pas dans le mot");
                 alreadyUsed.push(letter);
                 thereisLetter=false;
+                fail++;
             }
 
             if(thereisLetter==true && used==false ){
@@ -114,10 +116,10 @@ function guessLetter(theWord,theEmptyWord){
                 gameisFinished=true;
             }
         }
-        alert("Bravo vous avez trouver le mot "+findWord);
+        alert("Bravo vous avez trouver le mot "+findWord+" et vous avez fait "+fail+" erreur"+"(s)");
 }
 // LANCE LE JEU-----------------------------------------------------------------------------------
-
+alert("Entrer d'abord un mot a deviner par une tierce personne et ensuite appuyer sur Let's Play pour commencer a deviner le mot");
 const word=giveWord();
 const emptyWord=createEmptyWord(word);
 document.getElementById("target").innerHTML=stringify(emptyWord);
